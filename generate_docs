@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+poetry run sphinx-apidoc -o docs/source/ src -f -T
+pushd docs || exit
+poetry run make html
+popd || exit

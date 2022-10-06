@@ -1,0 +1,142 @@
+# region Poetry
+[tool.poetry]
+name = "template-python-library"
+version = "0.0.1"
+description = "Description"
+authors = ["AUTHOR_NAME_AND_EMAIL"]
+license = "MIT"
+repository = "https://github.com/mumblepins/template-python-library/"
+documentation = "https://mumblepins.github.io/template-python-library/"
+readme = "README.md"
+packages = [{ include = "template_python_library", from="src" }]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.group.dev.dependencies]
+# region pre-commit hooks and linting
+pylint = "^2.13.0"
+pytest = "^7.1.1"
+coverage = { version = "^6.3.2", extras = ['toml'] }
+Sphinx = "^4.4"
+sphinx-material = "^0.0.35"
+pytest-cov = "^3.0.0"
+gitchangelog = { version = "^3.0" }
+pylint-pytest = "^1.1.2"
+pytest-xdist = "^2.5.0"
+myst-parser = "^0.18.0"
+# endregion
+importlib-resources = { version = "^5.7.1", python = "<3.9" }
+bump2version = "^1.0.1"
+pystache = "^0.6.0"
+toml = "^0.10.2"
+
+[tool.poetry.extras]
+
+[build-system]
+requires = ["poetry-core>=1.1.0b2"]
+build-backend = "poetry.core.masonry.api"
+# endregion
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+# region Mypy
+[tool.mypy]
+files = '*.py,src/**/*.py'
+exclude = '''(?x)(
+      \.eggs
+    | \.git          # root of the project
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \.cache
+  | env
+  | venv
+  | \.aws-sam
+  | _build
+  | buck-out
+  | build
+  | dist
+  | package_
+)'''
+#plugins = ["pydantic.mypy"]
+overrides = [
+    { module = 'awacs.*', ignore_missing_imports = true },
+    { module = 'inflection.*', ignore_missing_imports = true },
+    { module = 'troposphere.*', ignore_missing_imports = true },
+    { module = 'pystache.*', ignore_missing_imports = true },
+]
+#endregion
+
+# region ISort
+[tool.isort]
+profile = "black"
+skip_gitignore = true
+line_length = 88
+indent = '    '
+multi_line_output = 3
+skip = 'env'
+include_trailing_comma = true
+combine_as_imports = true
+force_grid_wrap = 0
+known_first_party = ["template_python_library"]
+# endregion
+
+# region Black
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+target-version = ['py38', 'py39', 'py310']
+exclude = '''
+/(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \.cache
+  | env
+  | venv
+  | \.aws-sam
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+# endregion
+
+# region DepChecker
+[tool.dep_checker.name_mapping]
+gitpython = "git"
+python-dateutil = "dateutil"
+python-dotenv = "dotenv"
+#endregion
+
+#region Coverage
+[tool.coverage.run]
+branch = true
+omit = ["*/contract/suite/*"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 90
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "if .*? == .DEBUG.",
+    "if .*? == .INFO.",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:"
+]
+#endregion
