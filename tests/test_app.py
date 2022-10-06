@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from template_python_library.app import main
+from ssm_parameter_config.app import main
 
 
 def test_main():

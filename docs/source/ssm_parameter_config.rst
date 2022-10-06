@@ -7,7 +7,7 @@ Submodules
 template\_python\_library.app module
 ------------------------------------
 
-.. automodule:: template_python_library.app
+.. automodule:: ssm_parameter_config.app
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ template\_python\_library.app module
 Module contents
 ---------------
 
-.. automodule:: template_python_library
+.. automodule:: ssm_parameter_config
    :members:
    :undoc-members:
    :show-inheritance:

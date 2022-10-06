@@ -8,7 +8,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/docs/build" />
     </content>
-    <orderEntry type="jdk" jdkName="Poetry (template-python-library)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Poetry (ssm-parameter-config)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">

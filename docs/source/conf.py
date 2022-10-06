@@ -86,18 +86,18 @@ html_theme = "sphinx_material"
 # Material theme options (see theme.conf for more information)
 html_theme_options = {
     # Set the name of the project to appear in the navigation.
-    "nav_title": "Template Python Library",
+    "nav_title": "Ssm Parameter Config",
     # Set you GA account ID to enable tracking
     # 'google_analytics_account': 'UA-XXXXX',
     # Specify a base_url used to generate sitemap.xml. If not
     # specified, then no sitemap will be built.
-    "base_url": "https://mumblepins.github.io/template-python-library",
+    "base_url": "https://mumblepins.github.io/ssm-parameter-config",
     # Set the color and the accent color
     "color_primary": "#003865",
     "color_accent": "#78BE21",
     # Set the repo location to get a badge with stats
-    "repo_url": "https://github.com/mumblepins/template-python-library/",
-    "repo_name": "Template Python Library",
+    "repo_url": "https://github.com/mumblepins/ssm-parameter-config/",
+    "repo_name": "Ssm Parameter Config",
     # Visible levels of the global TOC; -1 means unlimited
     "globaltoc_depth": 2,
     # If False, expand all TOC entries

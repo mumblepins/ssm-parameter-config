@@ -1,13 +1,13 @@
 ..
     coding=utf-8
 
-Welcome to Template Python Library's documentation!
+Welcome to Ssm Parameter Config's documentation!
 ============================================
 
 .. toctree::
    :maxdepth: 2
 
-   template_python_library
+   ssm_parameter_config
 
 
 Readme

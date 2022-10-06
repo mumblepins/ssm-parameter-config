@@ -78,7 +78,7 @@ repos:
         args:
           - --req-file
           - pyproject.toml
-          - src/template_python_library
+          - src/ssm_parameter_config
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: 'v0.982'
     hooks:
@@ -117,8 +117,8 @@ repos:
           pytest
           "tests/"
           --verbose
-          --cov=template_python_library
-          --pyargs "template_python_library"
+          --cov=ssm_parameter_config
+          --pyargs "ssm_parameter_config"
         language: system
         pass_filenames: false
         always_run: true
