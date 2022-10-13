@@ -8,10 +8,17 @@ license = "MIT"
 repository = "https://github.com/mumblepins/ssm-parameter-config/"
 documentation = "https://mumblepins.github.io/ssm-parameter-config/"
 readme = "README.md"
-packages = [{ include = "ssm_parameter_config", from="src" }]
+packages = [{ include = "ssm_parameter_config", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+pydantic = "*"
+"ruamel.yaml" = "*"
+python-dotenv = "*"
+boto3 = "*"
+botocore = "*"
+signed-pickle = ">=1"
+
 
 [tool.poetry.group.dev.dependencies]
 # region pre-commit hooks and linting
@@ -64,7 +71,7 @@ exclude = '''(?x)(
   | dist
   | package_
 )'''
-#plugins = ["pydantic.mypy"]
+plugins = ["pydantic.mypy"]
 overrides = [
     { module = 'awacs.*', ignore_missing_imports = true },
     { module = 'inflection.*', ignore_missing_imports = true },
@@ -113,6 +120,9 @@ exclude = '''
 # endregion
 
 # region DepChecker
+[tool.dep_checker]
+namespace_packages = ["ruamel.yaml"]
+
 [tool.dep_checker.name_mapping]
 gitpython = "git"
 python-dateutil = "dateutil"

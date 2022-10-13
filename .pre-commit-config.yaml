@@ -92,6 +92,9 @@ repos:
           - html2text
           - boto3-stubs
           - pytest-stub
+          - ruamel.yaml
+          - python-dotenv
+          - signed-pickle
   - repo: local
     hooks:
       - id: pylint
