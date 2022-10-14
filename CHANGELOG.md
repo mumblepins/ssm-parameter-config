@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v0.1.1 (2022-10-14)
+
+### Other
+
+  * [2022-10-14](d5100cf07790655b35e77629e49c906e8302bc94) – Ci: improved caching.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+
 ## v0.1.0 (2022-10-14)
 
 ### Changes
