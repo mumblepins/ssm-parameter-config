@@ -1,5 +1,5 @@
 exclude: ^(buildspec.yml|.pre-commit-config.yaml)$
-fail_fast: false
+fail_fast: true
 default_install_hook_types: [ pre-commit, post-commit ]
 repos:
   - repo: https://github.com/python-poetry/poetry
@@ -84,7 +84,7 @@ repos:
     hooks:
       - id: mypy
 #        pass_filenames: false
-        args: [ '--config-file', 'pyproject.toml' ]
+        args: [ '--config-file', 'pyproject.toml' ,'--no-incremental'  ]
         files: '^(src/.*|[^/]*)\.py$'
         additional_dependencies:
           - types-requests

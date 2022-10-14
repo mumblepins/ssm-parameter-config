@@ -17,6 +17,8 @@
 
 ### Other
 
+  * [2022-10-14](5b8e4234e6e50ea5548c277be3957ad350559173) – Chore: fixed version in __init__.py.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
   * [2022-10-14](71f340af374e56b0da8b799d1dac4f833dd55b76) – Test: added tests, coverage output, pylint things.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
 
   * [2022-10-06](c39da92e5f4082349ef65b6438dbbbccee18538e) – Initial commit.  <small>([Daniel Sullivan](mailto:4440652+mumblepins@users.noreply.github.com))</small>
