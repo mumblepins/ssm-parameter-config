@@ -1,7 +1,7 @@
 # Changelog
 
 
-## (unreleased)
+## v0.1.0 (2022-10-14)
 
 ### Changes
 
@@ -16,6 +16,8 @@
   * [2022-10-14](e95bc39416490fe6c2a953bd4d6de0ccf2fa43fb) – Some fetch children issues.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
 
 ### Other
+
+  * [2022-10-14](a91b5efc1d3168a40af50f050fe9ec103a4a6930) – Chore: added no-incremental to mypy.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
 
   * [2022-10-14](5b8e4234e6e50ea5548c277be3957ad350559173) – Chore: fixed version in __init__.py.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
 
