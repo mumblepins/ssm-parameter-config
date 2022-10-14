@@ -1,7 +1,8 @@
 name: Python Publish
 
 on: [ push, pull_request ]
-
+env:
+  POETRY_VIRTUALENVS_IN_PROJECT: "true"
 jobs:
   pre_job:
     runs-on: ubuntu-latest
@@ -35,19 +36,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - uses: actions/cache@v3
-        id: cache-pip
+        id: cache
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-${{ matrix.python-version }}
-      - run: pip install --upgrade --pre poetry
-      - uses: actions/cache@v3
-        id: cache-poetry
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
+          path: |
+            ~/.cache
+            .venv
           key: ${{ runner.os }}-${{ matrix.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.python-version }}-poetry-
             ${{ runner.os }}-
+      - run: pip install --upgrade --pre poetry
       - name: install dependencies
         run: |
           poetry install --sync
@@ -84,22 +82,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - uses: actions/cache@v3
-        id: cache-pip
+        id: cache
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-${{ matrix.python-version }}
-          restore-keys: |
-            ${{ runner.os }}-
-      - run: pip install --upgrade --pre poetry
-
-      - uses: actions/cache@v3
-        id: cache-poetry
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
+          path: |
+            ~/.cache
+            .venv
           key: ${{ runner.os }}-${{ matrix.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.python-version }}-poetry-
             ${{ runner.os }}-
+      - run: pip install --upgrade --pre poetry
       - name: install dependencies
         run: |
           poetry install --sync

@@ -8,6 +8,7 @@ build:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
     POETRY_CACHE_DIR: "$CI_PROJECT_DIR/.cache/poetry"
     PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
+    POETRY_VIRTUALENVS_IN_PROJECT: "true"
   cache:
     paths:
       - ".cache"
