@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import base64
-import binascii
 import json
 import logging
 from datetime import datetime
@@ -151,6 +150,7 @@ class SSMPath(BaseModel):
             return getattr(self, item)
         except AttributeError:
             pass
+        self._fetch_children()
         if item in self._children:
             return self._children[item]
         nc = SSMPath(name=str(self.path / item))
@@ -207,6 +207,8 @@ class SSMPath(BaseModel):
     def _fetch_children(self):
         if self._listed:
             return
+
+        self._listed = True
         ssm = self.ssm_client
         logger.info("Getting children for %s", self.name)
         get_params_pager = ssm.get_paginator("get_parameters_by_path")
@@ -225,6 +227,7 @@ class SSMPath(BaseModel):
                 params[p["Name"]].update(p)
 
         for p in params.values():
+            p["Value"] = ssm_special_to_curly(p["Value"])
             param = parse_obj_as(SSMParameter, p)
             rel_path = param.path.relative_to(self.path).parts
             self[rel_path] = param
@@ -232,11 +235,9 @@ class SSMPath(BaseModel):
             for part in rel_path[:-1]:
                 parts.append(part)
                 self[tuple(parts)]._listed = True  # pylint:disable=protected-access
-        self._listed = True
 
     def iterdir(self) -> Iterator[SSMPath]:
-        if not self._listed:
-            self._fetch_children()
+        self._fetch_children()
 
         yield from self._children.values()
 
@@ -316,7 +317,7 @@ class SSMParameter(SSMPath):
             try:
                 decoded_val = base64.b64decode(self.value.strip(), validate=True)
                 self._decoded_value = DumperSigner.load(decoded_val)[0].decode("utf8")
-            except binascii.Error:
+            except ValueError:
                 self._decoded_value = self.value
         return self._decoded_value
 
