@@ -11,7 +11,8 @@ from pydantic import BaseSettings, ValidationError, parse_obj_as
 from pydantic.env_settings import SettingsSourceCallable
 
 from ._yaml import encode_for_yaml, yaml
-from .ssm_parameter import SSMParameter, lazy_dict
+from .ssm_parameter import SSMParameter
+from .utils import lazy_dict
 
 
 def local_ssm_settings_source(settings: BaseSettings) -> dict[str, Any]:

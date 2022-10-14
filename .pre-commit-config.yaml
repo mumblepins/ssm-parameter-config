@@ -108,7 +108,7 @@ repos:
           [
             "-rn", # Only display messages
             "-sn", # Don't display the score
-            "--extension-pkg-whitelist=pydantic",
+
             "--rcfile=.config/.pylintrc",
           ]
       - id: pytest-local
@@ -119,9 +119,9 @@ repos:
           poetry run
           pytest
           "tests/"
-          --verbose
           --cov=ssm_parameter_config
           --pyargs "ssm_parameter_config"
+          --cov-report=html --cov-report=term --cov-report=xml
         language: system
         pass_filenames: false
         always_run: true

@@ -26,7 +26,7 @@ build:
     - echo -e "\e[0Ksection_end:`date +%s`:install_poetry\r\e[0K"
   script:
     - echo -e "\e[0Ksection_start:`date +%s`:run_pre_commit[collapsed=true]\r\e[0KPre-Commit Linting and Testing"
-    - poetry run pre-commit run --all-files
+    - poetry run pre-commit run --all-files --hook-stage manual
     - echo -e "\e[0Ksection_end:`date +%s`:run_pre_commit\r\e[0K"
     - poetry build
     -
@@ -36,6 +36,8 @@ build:
       else
         echo "Not tagged release; not uploading" ;
       fi
+  coverage: '/Total coverage: \d+\.\d+%/'
   artifacts:
     paths:
       - dist
+      - htmlcov

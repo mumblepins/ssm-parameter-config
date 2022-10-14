@@ -470,3 +470,4 @@ src/requirements.txt
 /.idea/rSettings.xml
 /src/requirements.txt
 /.idea/inspectionProfiles/profiles_settings.xml
+/coverage.lcov

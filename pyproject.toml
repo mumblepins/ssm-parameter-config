@@ -27,7 +27,7 @@ pytest = "^7.1.1"
 coverage = { version = "^6.3.2", extras = ['toml'] }
 Sphinx = "^4.4"
 sphinx-material = "^0.0.35"
-pytest-cov = "^3.0.0"
+pytest-cov = "^4.0.0"
 gitchangelog = { version = "^3.0" }
 pylint-pytest = "^1.1.2"
 pytest-xdist = "^2.5.0"
@@ -37,6 +37,7 @@ importlib-resources = { version = "^5.7.1", python = "<3.9" }
 bump2version = "^1.0.1"
 pystache = "^0.6.0"
 toml = "^0.10.2"
+moto = {extras = ["ssm"], version = "^4.0.7"}
 
 [tool.poetry.extras]
 
@@ -47,7 +48,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 log_cli = true
-log_cli_level = "DEBUG"
+log_cli_level = "INFO"
 log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
 log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 
@@ -136,7 +137,7 @@ omit = ["*/contract/suite/*"]
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 90
+fail_under = 50
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",

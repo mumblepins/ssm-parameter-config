@@ -2,47 +2,26 @@
 from __future__ import annotations
 
 import base64
-import json
 import logging
 from datetime import datetime
 from enum import Enum
-from io import StringIO
-from pathlib import PurePath, _PosixFlavour  # type: ignore
 from typing import TYPE_CHECKING, Any, Iterator, Optional
-from urllib.parse import quote_from_bytes as urlquote_from_bytes
 
 import boto3
-import dotenv
 from botocore.client import BaseClient
 from pydantic import BaseModel, PrivateAttr, parse_obj_as
 from pydantic.utils import to_camel
-from ruamel.yaml import YAMLError
 from signed_pickle import DumperSigner
 
-from ._yaml import yaml
+from .ssm_path import PureSSMPath
+from .utils import lazy_dict, ssm_curly_to_special, ssm_special_to_curly
 
 if TYPE_CHECKING:
     from .ssm_config import SSMConfig
 
 # since SSM Parameters can't have {{ }} in them, we substitute these values
-SSM_PARAMETER_SUBSTITUTION = (
-    ("{{", "ʃ"),  # U+0283	ʃ	ca 83	LATIN SMALL LETTER ESH
-    ("}}", "ʅ"),  # U+0285	ʅ	ca 85	LATIN SMALL LETTER SQUAT REVERSED ESH
-)
 
 logger = logging.getLogger()
-
-
-def ssm_curly_to_special(val):
-    for sub_set in SSM_PARAMETER_SUBSTITUTION:
-        val = val.replace(*sub_set)
-    return val
-
-
-def ssm_special_to_curly(val):
-    for sub_set in SSM_PARAMETER_SUBSTITUTION:
-        val = val.replace(sub_set[1], sub_set[0])
-    return val
 
 
 class Tag(BaseModel):
@@ -51,10 +30,6 @@ class Tag(BaseModel):
 
     class Config:
         alias_generator = to_camel
-
-
-class Tags(BaseModel):
-    __root__: list[Tag]
 
 
 class SSMType(str, Enum):
@@ -73,63 +48,6 @@ class SSMDataType(str, Enum):
     text = "text"
     ec2_image = "aws:ec2:image"
     ssm_integration = "aws:ssm:integration"
-
-
-def lazy_dict(value):
-    """First try as json, then try as yaml, and then try as env file"""
-    try:
-        return json.loads(value)
-    except json.decoder.JSONDecodeError:
-        pass
-    try:
-        return yaml.load(value)
-    except YAMLError:
-        pass
-    return dict(dotenv.dotenv_values(stream=StringIO(value)))
-
-
-class _SSMFlavour(_PosixFlavour):
-    is_supported = bool(boto3)
-
-    def parse_parts(self, parts):
-        drv, root, parsed = super().parse_parts(parts)
-        for part in parsed[1:]:
-            if part == "..":
-                index = parsed.index(part)
-                parsed.pop(index - 1)
-                parsed.remove(part)
-        return drv, root, parsed
-
-    def make_uri(self, path):
-        # We represent the path using the local filesystem encoding,
-        # for portability to other applications.
-        bpath = bytes(path)
-        return "ssm:/" + urlquote_from_bytes(bpath)
-
-
-_ssm_flavour = _SSMFlavour()
-
-
-class PureSSMPath(PurePath):
-    @classmethod
-    def _from_parts(cls, args, *_args, **_kwargs):
-        """
-        SSM has no concept of a relative path, but root paths don't need the forward slash
-        """
-        if len(args) > 0:
-            if not args[0].startswith("/"):
-                args = ["/"] + list(args)
-        else:
-            args = ["/"]
-        return super()._from_parts(args, *_args, **_kwargs)
-
-    _flavour = _ssm_flavour
-
-    @classmethod
-    def from_uri(cls, uri):
-        if not uri.startswith("ssm://"):
-            raise ValueError("Provided uri doesn't seem to be an SSM URI!")
-        return cls(uri[5:])
 
 
 class SSMPath(BaseModel):
@@ -266,7 +184,7 @@ class SSMParameter(SSMPath):
     last_modified_date: Optional[datetime] = None  # from get_param..
     tier: SSMTier = SSMTier.standard  # from describe_param
     data_type: SSMDataType = SSMDataType.text  # from get_param..
-    tags: Tags = Tags(__root__=[])  # from list_tags
+    tags: list[Tag] = []  # from list_tags
     _decoded_value: Any = PrivateAttr(default=None)
     _got_tags: bool = PrivateAttr(default=False)
 
@@ -307,7 +225,8 @@ class SSMParameter(SSMPath):
         ssm: BaseClient = self.ssm_client
         try:
             tags = ssm.list_tags_for_resource(ResourceType="Parameter", ResourceId=self.name)
-            self.tags = parse_obj_as(Tags, tags["TagList"])
+            self.tags = parse_obj_as(list[Tag], tags["TagList"])
+            self._got_tags = True
         except ssm.exceptions.ParameterNotFound:
             pass
 

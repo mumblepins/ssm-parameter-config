@@ -3,6 +3,8 @@
 ignore=CVS
 jobs=1
 persistent=yes
+load-plugins=pylint_pytest
+extension-pkg-whitelist=pydantic
 
 [MESSAGES CONTROL]
 
