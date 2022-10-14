@@ -263,47 +263,26 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">base64</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">PurePath</span><span class="p">,</span> <span class="n">_PosixFlavour</span>  <span class="c1"># type: ignore</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote_from_bytes</span> <span class="k">as</span> <span class="n">urlquote_from_bytes</span>
 
 <span class="kn">import</span> <span class="nn">boto3</span>
-<span class="kn">import</span> <span class="nn">dotenv</span>
 <span class="kn">from</span> <span class="nn">botocore.client</span> <span class="kn">import</span> <span class="n">BaseClient</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">PrivateAttr</span><span class="p">,</span> <span class="n">parse_obj_as</span>
 <span class="kn">from</span> <span class="nn">pydantic.utils</span> <span class="kn">import</span> <span class="n">to_camel</span>
-<span class="kn">from</span> <span class="nn">ruamel.yaml</span> <span class="kn">import</span> <span class="n">YAMLError</span>
 <span class="kn">from</span> <span class="nn">signed_pickle</span> <span class="kn">import</span> <span class="n">DumperSigner</span>
 
-<span class="kn">from</span> <span class="nn">._yaml</span> <span class="kn">import</span> <span class="n">yaml</span>
+<span class="kn">from</span> <span class="nn">.ssm_path</span> <span class="kn">import</span> <span class="n">PureSSMPath</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">lazy_dict</span><span class="p">,</span> <span class="n">ssm_curly_to_special</span><span class="p">,</span> <span class="n">ssm_special_to_curly</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.ssm_config</span> <span class="kn">import</span> <span class="n">SSMConfig</span>
 
 <span class="c1"># since SSM Parameters can't have {{ }} in them, we substitute these values</span>
-<span class="n">SSM_PARAMETER_SUBSTITUTION</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="p">(</span><span class="s2">"{{"</span><span class="p">,</span> <span class="s2">"ʃ"</span><span class="p">),</span>  <span class="c1"># U+0283	ʃ	ca 83	LATIN SMALL LETTER ESH</span>
-    <span class="p">(</span><span class="s2">"}}"</span><span class="p">,</span> <span class="s2">"ʅ"</span><span class="p">),</span>  <span class="c1"># U+0285	ʅ	ca 85	LATIN SMALL LETTER SQUAT REVERSED ESH</span>
-<span class="p">)</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">ssm_curly_to_special</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">sub_set</span> <span class="ow">in</span> <span class="n">SSM_PARAMETER_SUBSTITUTION</span><span class="p">:</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="o">*</span><span class="n">sub_set</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">val</span>
-
-
-<span class="k">def</span> <span class="nf">ssm_special_to_curly</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">sub_set</span> <span class="ow">in</span> <span class="n">SSM_PARAMETER_SUBSTITUTION</span><span class="p">:</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sub_set</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sub_set</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">val</span>
 
 
 <span class="k">class</span> <span class="nc">Tag</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -312,10 +291,6 @@
 
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
         <span class="n">alias_generator</span> <span class="o">=</span> <span class="n">to_camel</span>
-
-
-<span class="k">class</span> <span class="nc">Tags</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">__root__</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Tag</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">SSMType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
@@ -334,63 +309,6 @@
     <span class="n">text</span> <span class="o">=</span> <span class="s2">"text"</span>
     <span class="n">ec2_image</span> <span class="o">=</span> <span class="s2">"aws:ec2:image"</span>
     <span class="n">ssm_integration</span> <span class="o">=</span> <span class="s2">"aws:ssm:integration"</span>
-
-
-<span class="k">def</span> <span class="nf">lazy_dict</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-    <span class="sd">"""First try as json, then try as yaml, and then try as env file"""</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">YAMLError</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">dotenv_values</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="n">StringIO</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
-
-
-<span class="k">class</span> <span class="nc">_SSMFlavour</span><span class="p">(</span><span class="n">_PosixFlavour</span><span class="p">):</span>
-    <span class="n">is_supported</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">boto3</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">parse_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parts</span><span class="p">):</span>
-        <span class="n">drv</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">parsed</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">parse_parts</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parsed</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="k">if</span> <span class="n">part</span> <span class="o">==</span> <span class="s2">".."</span><span class="p">:</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
-                <span class="n">parsed</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">parsed</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">drv</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">parsed</span>
-
-    <span class="k">def</span> <span class="nf">make_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="c1"># We represent the path using the local filesystem encoding,</span>
-        <span class="c1"># for portability to other applications.</span>
-        <span class="n">bpath</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s2">"ssm:/"</span> <span class="o">+</span> <span class="n">urlquote_from_bytes</span><span class="p">(</span><span class="n">bpath</span><span class="p">)</span>
-
-
-<span class="n">_ssm_flavour</span> <span class="o">=</span> <span class="n">_SSMFlavour</span><span class="p">()</span>
-
-
-<span class="k">class</span> <span class="nc">PureSSMPath</span><span class="p">(</span><span class="n">PurePath</span><span class="p">):</span>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_from_parts</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        SSM has no concept of a relative path, but root paths don't need the forward slash</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"/"</span><span class="p">):</span>
-                <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"/"</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"/"</span><span class="p">]</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_from_parts</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">)</span>
-
-    <span class="n">_flavour</span> <span class="o">=</span> <span class="n">_ssm_flavour</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_uri</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"ssm://"</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Provided uri doesn't seem to be an SSM URI!"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">uri</span><span class="p">[</span><span class="mi">5</span><span class="p">:])</span>
 
 
 <div class="viewcode-block" id="SSMPath"><a class="viewcode-back" href="../../ssm_parameter_config.html#ssm_parameter_config.SSMPath">[docs]</a><span class="k">class</span> <span class="nc">SSMPath</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -527,7 +445,7 @@
     <span class="n">last_modified_date</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># from get_param..</span>
     <span class="n">tier</span><span class="p">:</span> <span class="n">SSMTier</span> <span class="o">=</span> <span class="n">SSMTier</span><span class="o">.</span><span class="n">standard</span>  <span class="c1"># from describe_param</span>
     <span class="n">data_type</span><span class="p">:</span> <span class="n">SSMDataType</span> <span class="o">=</span> <span class="n">SSMDataType</span><span class="o">.</span><span class="n">text</span>  <span class="c1"># from get_param..</span>
-    <span class="n">tags</span><span class="p">:</span> <span class="n">Tags</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="p">[])</span>  <span class="c1"># from list_tags</span>
+    <span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Tag</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># from list_tags</span>
     <span class="n">_decoded_value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_got_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -568,7 +486,8 @@
         <span class="n">ssm</span><span class="p">:</span> <span class="n">BaseClient</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssm_client</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">tags</span> <span class="o">=</span> <span class="n">ssm</span><span class="o">.</span><span class="n">list_tags_for_resource</span><span class="p">(</span><span class="n">ResourceType</span><span class="o">=</span><span class="s2">"Parameter"</span><span class="p">,</span> <span class="n">ResourceId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tags</span> <span class="o">=</span> <span class="n">parse_obj_as</span><span class="p">(</span><span class="n">Tags</span><span class="p">,</span> <span class="n">tags</span><span class="p">[</span><span class="s2">"TagList"</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tags</span> <span class="o">=</span> <span class="n">parse_obj_as</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Tag</span><span class="p">],</span> <span class="n">tags</span><span class="p">[</span><span class="s2">"TagList"</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_got_tags</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="n">ssm</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ParameterNotFound</span><span class="p">:</span>
             <span class="k">pass</span>
 

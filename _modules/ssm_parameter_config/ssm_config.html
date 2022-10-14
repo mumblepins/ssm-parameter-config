@@ -272,7 +272,8 @@
 <span class="kn">from</span> <span class="nn">pydantic.env_settings</span> <span class="kn">import</span> <span class="n">SettingsSourceCallable</span>
 
 <span class="kn">from</span> <span class="nn">._yaml</span> <span class="kn">import</span> <span class="n">encode_for_yaml</span><span class="p">,</span> <span class="n">yaml</span>
-<span class="kn">from</span> <span class="nn">.ssm_parameter</span> <span class="kn">import</span> <span class="n">SSMParameter</span><span class="p">,</span> <span class="n">lazy_dict</span>
+<span class="kn">from</span> <span class="nn">.ssm_parameter</span> <span class="kn">import</span> <span class="n">SSMParameter</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">lazy_dict</span>
 
 
 <span class="k">def</span> <span class="nf">local_ssm_settings_source</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">BaseSettings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
