@@ -1,4 +1,4 @@
-name:  Python Publish
+name: Python Publish
 
 on: [ push, pull_request ]
 
@@ -21,7 +21,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [ '3.9' ,'3.10','3.8' ]
+        python-version:
+          - '3.9'
+          - '3.10'
     env:
       OS: ${{ matrix.os }}
       PYTHON: ${{ matrix.python-version }}

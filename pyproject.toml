@@ -11,7 +11,7 @@ readme = "README.md"
 packages = [{ include = "ssm_parameter_config", from = "src" }]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 pydantic = "*"
 "ruamel.yaml" = "*"
 python-dotenv = "*"
@@ -37,7 +37,7 @@ importlib-resources = { version = "^5.7.1", python = "<3.9" }
 bump2version = "^1.0.1"
 pystache = "^0.6.0"
 toml = "^0.10.2"
-moto = {extras = ["ssm"], version = "^4.0.7"}
+moto = { extras = ["ssm"], version = "^4.0.7" }
 
 [tool.poetry.extras]
 
@@ -99,7 +99,7 @@ known_first_party = ["ssm_parameter_config"]
 [tool.black]
 line-length = 120
 include = '\.pyi?$'
-target-version = ['py38', 'py39', 'py310']
+target-version = ['py39', 'py310']
 exclude = '''
 /(
       \.eggs         # exclude a few common directories in the
