@@ -46,7 +46,7 @@
   
   
   
-    <title>ssm_parameter_config.ssm_parameter &#8212; ssm-parameter-config v0.1.0 documentation</title>
+    <title>ssm_parameter_config.ssm_parameter &#8212; ssm-parameter-config v0.1.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/material.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -78,7 +78,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../index.html" title="ssm-parameter-config v0.1.0 documentation"
+        <a href="../../index.html" title="ssm-parameter-config v0.1.1 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">&#xe86f</i>
@@ -164,7 +164,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">ssm-parameter-config v0.1.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">ssm-parameter-config v0.1.1 documentation</a></li>
           <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -177,13 +177,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../index.html" title="ssm-parameter-config v0.1.0 documentation" class="md-nav__button md-logo">
+    <a href="../../index.html" title="ssm-parameter-config v0.1.1 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">&#xe86f</i>
       
     </a>
     <a href="../../index.html"
-       title="ssm-parameter-config v0.1.0 documentation">Ssm Parameter Config</a>
+       title="ssm-parameter-config v0.1.1 documentation">Ssm Parameter Config</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/mumblepins/ssm-parameter-config/" title="Go to repository" class="md-source" data-md-source="github">
@@ -525,9 +525,8 @@
 
         <span class="k">return</span> <span class="n">ssm_curly_to_special</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SSMParameter.put_parameter"><a class="viewcode-back" href="../../ssm_parameter_config.html#ssm_parameter_config.SSMParameter.put_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">put_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SSMParameter.put_parameter"><a class="viewcode-back" href="../../ssm_parameter_config.html#ssm_parameter_config.SSMParameter.put_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">put_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_cli_input</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameter_value</span><span class="p">(</span><span class="n">new_value</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">ssm</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"ssm"</span><span class="p">)</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
             <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="c1"># exclude_defaults=True,</span>
@@ -538,7 +537,11 @@
 
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">"Value"</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">"Overwrite"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">ssm</span><span class="o">.</span><span class="n">put_parameter</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">if</span> <span class="n">as_cli_input</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">kwargs</span>
+        <span class="n">ssm</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"ssm"</span><span class="p">)</span>
+        <span class="n">ssm</span><span class="o">.</span><span class="n">put_parameter</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
 </pre></div>
 
           </article>
