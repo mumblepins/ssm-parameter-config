@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v1.0.2 (2022-12-05)
+
+### Other
+
+  * [2022-12-05](aad907b8ce726dc659040af0d84524c81f4e8db1) – Fixed: moto testing.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+
 ## v1.0.1 (2022-12-05)
 
 ### Changes
