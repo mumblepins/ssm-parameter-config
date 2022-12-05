@@ -21,12 +21,16 @@ PARAMETER_VALUE_ESCAPED = ssm_curly_to_special(PARAMETER_VALUE)
 
 @pytest.fixture(scope="module")
 def config_yaml(tmp_path_factory):
+    # language=yaml
     file_data = """athena_database: test_db
 athena_workgroup: test_wg
 email_from: no-reply@test.com
 email_to:
   - test@test.com
-email_subject: New records"""
+email_subject: New records
+email_text: |
+  test_value_with_brackets
+  {{brackets}}"""
     tmp_dir = tmp_path_factory.mktemp("config_path")
     cfg_file = tmp_dir / "ssm_config.yaml"
     cfg_file.write_text(file_data)

@@ -1,6 +1,13 @@
 # Changelog
 
 
+## (unreleased)
+
+### Fix
+
+  * [2022-12-05](7a412cd4369ff7b09b105ee870c8558e2d44aa57) – Gitlab-ci.yml.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+
 ## v1.0.0 (2022-12-05)
 
 ### Changes

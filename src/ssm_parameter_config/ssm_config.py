@@ -121,13 +121,20 @@ class SSMConfig(BaseSettings):
         with open(efile, "wt", encoding="utf8") as fh:
             fh.write(self.export("env"))
 
-    def _write_config_ssm(self, exp_format, ssm_parameter_path=None, as_cli_input: bool = False):
-        val = self.export(exp_format)
+    def to_parameter(self, exp_format="yaml", ssm_parameter_path=None):
         if ssm_parameter_path is not None:
             ssm_param = SSMParameter.get_parameter(ssm_parameter_path)
         else:
             ssm_param = self.ssm_parameter
-        return ssm_param.put_parameter(val, as_cli_input=as_cli_input)
+        if ssm_param.value is None or ssm_param.value == "":
+            ssm_param.value = self.export(exp_format)
+        if ssm_param != self.ssm_parameter:
+            self.ssm_parameter = ssm_param
+        return ssm_param
+
+    def _write_config_ssm(self, exp_format, ssm_parameter_path=None, as_cli_input: bool = False):
+        ssm_param = self.to_parameter(exp_format=exp_format, ssm_parameter_path=ssm_parameter_path)
+        return ssm_param.put_parameter(as_cli_input=as_cli_input)
 
     def _write_config_local(self, exp_format, path):
         val = self.export(exp_format)
