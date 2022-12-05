@@ -121,30 +121,37 @@ class SSMConfig(BaseSettings):
         with open(efile, "wt", encoding="utf8") as fh:
             fh.write(self.export("env"))
 
-    def _write_config_ssm(self, exp_format, ssm_parameter_path=None):
+    def _write_config_ssm(self, exp_format, ssm_parameter_path=None, as_cli_input: bool = False):
         val = self.export(exp_format)
         if ssm_parameter_path is not None:
             ssm_param = SSMParameter.get_parameter(ssm_parameter_path)
         else:
             ssm_param = self.ssm_parameter
-        ssm_param.put_parameter(val)
+        return ssm_param.put_parameter(val, as_cli_input=as_cli_input)
 
     def _write_config_local(self, exp_format, path):
         val = self.export(exp_format)
         with open(path, "wt", encoding="utf8") as fh:
             fh.write(val)
 
-    def write_config(self, exp_format="yaml", ssm_parameter_path=None, local_path=None):
+    def write_config(
+        self,
+        exp_format="yaml",
+        ssm_parameter_path=None,
+        local_path=None,
+        as_cli_input: bool = False,
+    ):
         if ssm_parameter_path is not None or (self.ssm_parameter is not None and exp_format != "env"):
-            self._write_config_ssm(exp_format, ssm_parameter_path=ssm_parameter_path)
-        elif hasattr(self.__config__, "local_settings_path") or local_path is not None:
+            return self._write_config_ssm(exp_format, ssm_parameter_path=ssm_parameter_path, as_cli_input=as_cli_input)
+        if hasattr(self.__config__, "local_settings_path") or local_path is not None:
             if local_path is not None:
                 output = Path(local_path)
             else:
-                output = Path(self.__config__.local_settings_path)
+                output = Path(self.__config__.local_settings_path)  # type:ignore
             output = output.expanduser()
             self._write_config_local(exp_format, path=output)
         elif hasattr(self.__config__, "env_file"):
             self._write_config_env()
         else:
             raise ValueError("No SSM parameter (path) or env file defined.")
+        return None

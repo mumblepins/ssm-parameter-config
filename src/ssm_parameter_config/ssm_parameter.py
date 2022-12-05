@@ -264,9 +264,8 @@ class SSMParameter(SSMPath):
 
         return ssm_curly_to_special(val)
 
-    def put_parameter(self, new_value=None):
+    def put_parameter(self, new_value=None, as_cli_input: bool = False):
         val = self.get_parameter_value(new_value or self.value)
-        ssm = boto3.client("ssm")
         kwargs = self.dict(
             exclude_none=True,
             # exclude_defaults=True,
@@ -277,4 +276,8 @@ class SSMParameter(SSMPath):
 
         kwargs["Value"] = val
         kwargs["Overwrite"] = True
+        if as_cli_input:
+            return kwargs
+        ssm = boto3.client("ssm")
         ssm.put_parameter(**kwargs)
+        return None
