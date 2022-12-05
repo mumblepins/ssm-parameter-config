@@ -1,7 +1,7 @@
 # Changelog
 
 
-## (unreleased)
+## v1.0.0 (2022-12-05)
 
 ### Changes
 
@@ -9,7 +9,7 @@
 
 ### Other
 
-  * [2022-12-05](8c7d87a3ed996fbb3f71e19a958b714119f70034) – Chore: updated dependencies.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+  * [2022-12-05](577f4812ff519113fc10bf4c16cb810c49a3dd45) – Chore: updated dependencies.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
 
 
 ## v0.1.1 (2022-10-14)

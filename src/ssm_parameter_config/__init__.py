@@ -2,6 +2,6 @@
 from .ssm_config import SSMConfig
 from .ssm_parameter import SSMParameter, SSMPath
 
-__version__: str = "0.1.1"
+__version__: str = "1.0.0"
 
 __all__ = ["SSMConfig", "SSMParameter", "SSMPath"]
