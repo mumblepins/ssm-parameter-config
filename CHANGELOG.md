@@ -1,6 +1,17 @@
 # Changelog
 
 
+## (unreleased)
+
+### Changes
+
+  * [2022-12-05](81d78b2dc828e6096cb05bc8e43b96b2543d509b) – Add option to output aws cli json input format.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+### Other
+
+  * [2022-12-05](8c7d87a3ed996fbb3f71e19a958b714119f70034) – Chore: updated dependencies.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+
 ## v0.1.1 (2022-10-14)
 
 ### Other
