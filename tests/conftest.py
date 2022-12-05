@@ -3,20 +3,30 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Generator
+from typing import Generator, List
 
 import boto3
 import pytest
 from moto import mock_ssm
 
-if TYPE_CHECKING:
-    from ssm_parameter_config import SSMParameter
-
+from ssm_parameter_config import SSMConfig, SSMParameter
 from ssm_parameter_config.utils import ssm_curly_to_special
 
 PARAMETER_NAME = "/test/parameter/config"
 PARAMETER_VALUE = "test_value {{brackets}}\n😀"
 PARAMETER_VALUE_ESCAPED = ssm_curly_to_special(PARAMETER_VALUE)
+
+
+class Config(SSMConfig):
+    athena_database: str
+    athena_workgroup: str
+    email_from: str
+    email_to: List[str]
+    email_subject: str
+    email_text: str
+
+    class Config:
+        local_settings_path = "ssm_config.yaml"
 
 
 @pytest.fixture(scope="module")
@@ -38,6 +48,13 @@ email_text: |
 
 
 @pytest.fixture(scope="function")
+def ssm_config(config_yaml, monkeypatch):
+    monkeypatch.chdir(config_yaml)
+    cfg = Config()
+    return cfg
+
+
+@pytest.fixture(scope="function")
 def aws_credentials():
     """Mocked AWS Credentials for moto."""
     os.environ["AWS_ACCESS_KEY_ID"] = "testing"
@@ -55,8 +72,6 @@ def ssm(aws_credentials):
 
 @pytest.fixture(scope="function")
 def ssm_parameter(ssm) -> Generator[SSMParameter, None, None]:
-    from ssm_parameter_config import SSMParameter
-
     sp = SSMParameter(Name=PARAMETER_NAME, Value=PARAMETER_VALUE)
 
     yield sp

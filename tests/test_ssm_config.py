@@ -2,24 +2,10 @@
 from __future__ import annotations
 
 import json
-from typing import List
 
 from ruamel.yaml import YAML
 
-from ssm_parameter_config import SSMConfig, SSMParameter
-
-
-class Config(SSMConfig):
-    athena_database: str
-    athena_workgroup: str
-    email_from: str
-    email_to: List[str]
-    email_subject: str
-    email_text: str
-
-    class Config:
-        local_settings_path = "ssm_config.yaml"
-
+from ssm_parameter_config import SSMParameter
 
 yaml = YAML(typ="safe")
 
@@ -39,25 +25,21 @@ PARAM_STRING = """{
 
 
 class TestSSMConfig:
-    def test_get_from_config(self, config_yaml, monkeypatch):
-        monkeypatch.chdir(config_yaml)
-        cfg = Config()
-        assert cfg.email_subject == "New records"
+    def test_get_from_config(self, ssm_config):
+        assert ssm_config.email_subject == "New records"
 
-    def test_to_parameter(self, config_yaml, monkeypatch):
-        monkeypatch.chdir(config_yaml)
-        cfg = Config()
-        cfg_param = cfg.to_parameter(ssm_parameter_path="/basic/non/existent/path")
+    def test_to_parameter(self, ssm, ssm_config):
+        cfg_param = ssm_config.to_parameter(ssm_parameter_path="/basic/non/existent/path")
         assert isinstance(cfg_param, SSMParameter)
         assert cfg_param.json(indent=2) == PARAM_STRING
 
-    def test_export_yaml(self, config_yaml, monkeypatch):
-        monkeypatch.chdir(config_yaml)
-        cfg = Config()
-        output = cfg.export(exp_format="yaml", ssm_format=False)
+    # def test_to_ssm(self,config_yaml,monkeypatch,ssm):
+
+    def test_export_yaml(self, ssm_config):
+        output = ssm_config.export(exp_format="yaml", ssm_format=False)
         assert "{{brackets}}" in output
-        output = cfg.export(exp_format="yaml", ssm_format=True)
+        output = ssm_config.export(exp_format="yaml", ssm_format=True)
         assert "{{brackets}}" not in output
         assert yaml.load(output)["email_from"] == "no-reply@test.com"
-        output = cfg.export(exp_format="json")
+        output = ssm_config.export(exp_format="json")
         assert json.loads(output)["email_from"] == "no-reply@test.com"
