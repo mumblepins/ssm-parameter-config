@@ -1,7 +1,11 @@
 # Changelog
 
 
-## (unreleased)
+## v1.0.1 (2022-12-05)
+
+### Changes
+
+  * [2022-12-05](9f88b595debaaca3d69d3403deb0581d03422b8e) – Added some tests, refactoring a bit.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
 
 ### Fix
 

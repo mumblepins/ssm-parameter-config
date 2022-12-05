@@ -1,7 +1,7 @@
 # region Poetry
 [tool.poetry]
 name = "ssm-parameter-config"
-version = "1.0.0"
+version = "1.0.1"
 description = "Description"
 authors = ["Daniel Sullivan <daniel.j.sullivan@state.mn.us>"]
 license = "MIT"
