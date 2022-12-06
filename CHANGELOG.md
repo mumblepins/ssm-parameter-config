@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v1.0.3 (2022-12-06)
+
+### Other
+
+  * [2022-12-06](2ee19c8de007c5471eea8431982bc36b56f30599) – Fixed: py.typed.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+
 ## v1.0.2 (2022-12-05)
 
 ### Other
