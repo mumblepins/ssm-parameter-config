@@ -126,8 +126,8 @@ class SSMConfig(BaseSettings):
             ssm_param = SSMParameter.get_parameter(ssm_parameter_path)
         else:
             ssm_param = self.ssm_parameter
-        if ssm_param.value is None or ssm_param.value == "":
-            ssm_param.value = self.export(exp_format)
+        # if ssm_param.value is None or ssm_param.value == "":
+        ssm_param.value = self.export(exp_format)
         if ssm_param != self.ssm_parameter:
             self.ssm_parameter = ssm_param
         return ssm_param
