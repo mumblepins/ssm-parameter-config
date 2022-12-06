@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v1.0.4 (2022-12-06)
+
+### Other
+
+  * [2022-12-06](1f99a5de64d363c8fdd1d4048caf22285886000c) – Fixed: to_parameter.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+
 ## v1.0.3 (2022-12-06)
 
 ### Other
