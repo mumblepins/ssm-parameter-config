@@ -47,7 +47,7 @@
   
   
   
-    <title>template_python_library package &#8212; ssm-parameter-config v1.0.4 documentation</title>
+    <title>template_python_library package &#8212; ssm-parameter-config v1.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -80,7 +80,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="ssm-parameter-config v1.0.4 documentation"
+        <a href="index.html" title="ssm-parameter-config v1.1.0 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">&#xe86f</i>
@@ -166,7 +166,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">ssm-parameter-config v1.0.4 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">ssm-parameter-config v1.1.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -178,13 +178,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="ssm-parameter-config v1.0.4 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="ssm-parameter-config v1.1.0 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">&#xe86f</i>
       
     </a>
     <a href="index.html"
-       title="ssm-parameter-config v1.0.4 documentation">Ssm Parameter Config</a>
+       title="ssm-parameter-config v1.1.0 documentation">Ssm Parameter Config</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/mumblepins/ssm-parameter-config/" title="Go to repository" class="md-source" data-md-source="github">
@@ -324,6 +324,14 @@
 <span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_ssm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssm_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">dump_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ssm_parameter_config/ssm_config.html#SSMConfig.export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ssm_parameter_config.SSMConfig.export" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="ssm_parameter_config.SSMConfig.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.11)"><span class="pre">os.PathLike</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePath" title="(in Python v3.11)"><span class="pre">pathlib.PurePath</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#ssm_parameter_config.SSMConfig" title="ssm_parameter_config.ssm_config.SSMConfig"><span class="pre">ssm_parameter_config.ssm_config.SSMConfig</span></a></span></span><a class="reference internal" href="_modules/ssm_parameter_config/ssm_config.html#SSMConfig.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ssm_parameter_config.SSMConfig.from_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ssm_parameter_config.SSMConfig.from_object">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ssm_parameter_config/ssm_config.html#SSMConfig.from_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ssm_parameter_config.SSMConfig.from_object" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="ssm_parameter_config.SSMConfig.from_parameter">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ssm_parameter_config.SSMParameter" title="ssm_parameter_config.ssm_parameter.SSMParameter"><span class="pre">ssm_parameter_config.ssm_parameter.SSMParameter</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#ssm_parameter_config.SSMConfig" title="ssm_parameter_config.ssm_config.SSMConfig"><span class="pre">ssm_parameter_config.ssm_config.SSMConfig</span></a></span></span><a class="reference internal" href="_modules/ssm_parameter_config/ssm_config.html#SSMConfig.from_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ssm_parameter_config.SSMConfig.from_parameter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -333,7 +341,7 @@
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="ssm_parameter_config.SSMConfig.to_parameter">
-<span class="sig-name descname"><span class="pre">to_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssm_parameter_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ssm_parameter_config/ssm_config.html#SSMConfig.to_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ssm_parameter_config.SSMConfig.to_parameter" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssm_parameter_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_current</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ssm_parameter_config/ssm_config.html#SSMConfig.to_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ssm_parameter_config.SSMConfig.to_parameter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="ssm_parameter_config.SSMConfig.write_config">
