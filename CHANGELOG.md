@@ -1,11 +1,17 @@
 # Changelog
 
 
-## (unreleased)
+## v1.1.0 (2022-12-09)
 
 ### Changes
 
+  * [2022-12-09](f7305ff17e615e4ad2141d15b666ce2eab210991) – Added ssm writer cli tool.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
   * [2022-12-09](22edd20733974b52aa037da122ce6670093fad70) – Improved settings parsings for SSMConfig, added more tests.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+### Other
+
+  * [2022-12-09](9f10d1978635e0ce3ada229b1132030989d981fe) – Create codeql.yml.  <small>([Daniel Sullivan](mailto:4440652+mumblepins@users.noreply.github.com))</small>
 
 
 ## v1.0.4 (2022-12-06)
