@@ -162,16 +162,33 @@ class SSMConfig(BaseSettings):
         return output
 
     @classmethod
-    def from_parameter(cls, parameter: SSMParameter) -> SSMConfig:
-        ld = parameter.lazy_dict()
+    def from_object(cls, obj: dict[str, Any]):
         for c in reversed(_ssm_config_classes):
             try:
-                new_cls = parse_obj_as(c, ld)
+                new_cls = parse_obj_as(c, obj)
                 break
             except ValidationError:
                 pass
         else:
-            raise ValueError(f"Could not parse {ld} as any of {_ssm_config_classes}")
+            raise ValueError(f"Could not parse {obj} as any of {_ssm_config_classes!r}")
+        return new_cls
+
+    @classmethod
+    def from_file(cls, file: StrPath) -> SSMConfig:
+        for c in reversed(_ssm_config_classes):
+            try:
+                new_cls = c(_local_ssm_path=file)
+                break
+            except ValidationError:
+                pass
+        else:
+            raise ValueError(f"Could not parse {file!s} as any of {_ssm_config_classes!r}")
+        return new_cls
+
+    @classmethod
+    def from_parameter(cls, parameter: SSMParameter) -> SSMConfig:
+        ld = parameter.lazy_dict()
+        new_cls = cls.from_object(ld)
         new_cls.ssm_parameter = parameter
         return new_cls
 
@@ -183,9 +200,12 @@ class SSMConfig(BaseSettings):
         with open(efile, "wt", encoding="utf8") as fh:
             fh.write(self.export("env"))
 
-    def to_parameter(self, exp_format="yaml", ssm_parameter_path=None):
+    def to_parameter(self, exp_format="yaml", ssm_parameter_path: Optional[str] = None, ignore_current: bool = False):
         if ssm_parameter_path is not None:
-            ssm_param = SSMParameter.get_parameter(ssm_parameter_path)
+            if not ignore_current:
+                ssm_param = SSMParameter.get_parameter(ssm_parameter_path)
+            else:
+                ssm_param = SSMParameter(Name=ssm_parameter_path, Value="")
         else:
             ssm_param = self.ssm_parameter
         # if ssm_param.value is None or ssm_param.value == "":
@@ -195,7 +215,10 @@ class SSMConfig(BaseSettings):
         return ssm_param
 
     def _write_config_ssm(self, exp_format, ssm_parameter_path=None, as_cli_input: bool = False):
-        ssm_param = self.to_parameter(exp_format=exp_format, ssm_parameter_path=ssm_parameter_path)
+        kwargs = {}
+        if as_cli_input:
+            kwargs = {"ignore_current": True}
+        ssm_param = self.to_parameter(exp_format=exp_format, ssm_parameter_path=ssm_parameter_path, **kwargs)
         return ssm_param.put_parameter(as_cli_input=as_cli_input)
 
     def _write_config_local(self, exp_format, path):

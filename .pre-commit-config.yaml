@@ -95,6 +95,7 @@ repos:
           - ruamel.yaml
           - python-dotenv
           - signed-pickle
+          - click
   - repo: local
     hooks:
       - id: pylint

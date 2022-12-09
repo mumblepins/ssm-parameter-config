@@ -1,6 +1,13 @@
 # Changelog
 
 
+## (unreleased)
+
+### Changes
+
+  * [2022-12-09](22edd20733974b52aa037da122ce6670093fad70) – Improved settings parsings for SSMConfig, added more tests.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+
 ## v1.0.4 (2022-12-06)
 
 ### Other
