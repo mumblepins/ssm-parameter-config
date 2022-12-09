@@ -85,14 +85,14 @@ def main(
     output = ""
     if output_format == "shell":
         var_name = "".join(random.choices(string.ascii_letters, k=10))  # nosec B311
-        output += f"read -r -d '' {var_name} <<'EOF{var_name}'\n"
+        output += f"read -r -d '' {var_name} <<'EOF_{var_name}'\n"
     if pretty_print_json:
         output += json.dumps(out, indent=2)
     else:
         output += json.dumps(out)
     if output_format == "shell":
-        output += f"\nEOF{var_name}\n\n"
-        output += f'aws ssm put-parameter --cli-input-json <<< "${var_name}"\n'
+        output += f"\nEOF_{var_name}\n\n"
+        output += f'aws ssm put-parameter --cli-input-json "${var_name}"\n'
     return output
 
 
