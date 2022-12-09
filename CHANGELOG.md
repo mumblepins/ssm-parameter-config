@@ -1,6 +1,15 @@
 # Changelog
 
 
+## v1.1.1 (2022-12-09)
+
+### Other
+
+  * [2022-12-09](0be5fd655a64f0ac66a26cb8bdaf7b97e7b1dd8b) – Merge remote-tracking branch 'github/main'  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+  * [2022-12-09](2aa4216280f65c4034c6a7dc99fc00b8c46f9e75) – Update codeql.yml.  <small>([Daniel Sullivan](mailto:4440652+mumblepins@users.noreply.github.com))</small>
+
+
 ## v1.1.0 (2022-12-09)
 
 ### Changes
