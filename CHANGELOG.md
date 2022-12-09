@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v1.1.2 (2022-12-09)
+
+### Fix
+
+  * [2022-12-09](5dfcaf4506d1b83c960069409632dc2e57774448) – Ssm_writer.py shell output.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+
 ## v1.1.1 (2022-12-09)
 
 ### Other
