@@ -4,50 +4,104 @@ from __future__ import annotations
 import io
 import os
 import shlex
-from pathlib import Path
-from typing import Any, Iterable, Mapping, Optional, Type
+from pathlib import Path, PurePath
+from typing import Any, Dict, Iterable, Mapping, Optional, Type, Union
 
 from pydantic import BaseSettings, ValidationError, parse_obj_as
-from pydantic.env_settings import SettingsSourceCallable
+from pydantic.env_settings import DotenvType, SettingsSourceCallable, env_file_sentinel
 
 from ._yaml import encode_for_yaml, yaml
 from .ssm_parameter import SSMParameter
 from .utils import lazy_dict
 
-
-def local_ssm_settings_source(settings: BaseSettings) -> dict[str, Any]:
-    if "LOCAL_SSM_SETTINGS_PATH" in os.environ:
-        settings_path = Path(os.environ["LOCAL_SSM_SETTINGS_PATH"])
-    elif hasattr(settings.__config__, "local_settings_path"):
-        settings_path = Path(settings.__config__.local_settings_path)  # type:ignore
-    else:
-        return {}
-
-    ssm_path = settings_path.expanduser()
-    pdict = lazy_dict(ssm_path.read_text(encoding="utf8"))
-
-    if settings.__config__.case_sensitive:
-        return pdict
-
-    return {k.lower(): v for k, v in pdict.items()}
+StrPath = Union[str, os.PathLike, PurePath]
 
 
-def aws_ssm_settings_source(settings: BaseSettings) -> dict[str, Any]:
-    if "AWS_SSM_SETTINGS_PATH" not in os.environ:
-        return {}
-    param = SSMParameter.get_parameter(os.environ["AWS_SSM_SETTINGS_PATH"])
-    pdict = param.lazy_dict()
-    pdict["ssm_parameter"] = param
-    if settings.__config__.case_sensitive:
-        return pdict
+class LocalSSMSettings:
+    __slots__ = ("local_ssm_path",)
 
-    return {k.lower(): v for k, v in pdict.items()}
+    def __init__(self, local_ssm_path: Optional[StrPath]):
+        self.local_ssm_path: Optional[StrPath] = local_ssm_path
+
+    def __call__(self, settings: BaseSettings) -> Dict[str, Any]:
+        settings_path: StrPath
+        if self.local_ssm_path is not None:
+            settings_path = self.local_ssm_path
+        elif "LOCAL_SSM_SETTINGS_PATH" in os.environ:
+            settings_path = os.environ["LOCAL_SSM_SETTINGS_PATH"]
+        elif hasattr(settings.__config__, "local_ssm_settings_path"):
+            settings_path = settings.__config__.local_ssm_settings_path
+        else:
+            return {}
+
+        spath = Path(settings_path).expanduser()
+        if not spath.exists():
+            return {}
+
+        pdict = lazy_dict(spath.read_text(encoding="utf8"))
+
+        if settings.__config__.case_sensitive:
+            return pdict
+
+        return {k.lower(): v for k, v in pdict.items()}
+
+    def __repr__(self) -> str:
+        return f"LocalSSMSettings(yaml_file={self.local_ssm_path!r})"
+
+
+class AwsSSMSettings:
+    __slots__ = ("ssm_path",)
+
+    def __init__(self, ssm_path: Optional[str]):
+        self.ssm_path: Optional[str] = ssm_path
+
+    def __call__(self, settings: BaseSettings) -> Dict[str, Any]:
+        settings_path: str
+        if self.ssm_path is not None:
+            settings_path = self.ssm_path
+        elif "AWS_SSM_SETTINGS_PATH" in os.environ:
+            settings_path = os.environ["AWS_SSM_SETTINGS_PATH"]
+        elif hasattr(settings.__config__, "aws_ssm_settings_path"):
+            settings_path = settings.__config__.aws_ssm_settings_path
+        else:
+            return {}
+
+        param = SSMParameter.get_parameter(settings_path)
+        if param.value == "":
+            return {}
+        pdict = param.lazy_dict()
+        pdict["ssm_parameter"] = param
+        if settings.__config__.case_sensitive:
+            return pdict
+
+        return {k.lower(): v for k, v in pdict.items()}
+
+    def __repr__(self) -> str:
+        return f"LocalSSMSettings(yaml_file={self.ssm_path!r})"
 
 
 _ssm_config_classes: list[Type[SSMConfig]] = []
 
 
 class SSMConfig(BaseSettings):
+    def __init__(  # pylint: disable=no-self-argument
+        __pydantic_self__,
+        *,
+        _env_file: Optional[DotenvType] = env_file_sentinel,
+        _env_file_encoding: Optional[str] = None,
+        _env_nested_delimiter: Optional[str] = None,
+        _secrets_dir: Optional[StrPath] = None,
+        _local_ssm_path: Optional[StrPath] = None,
+        _aws_ssm_path: Optional[str] = None,
+        **values: Any,
+    ) -> None:
+        if _local_ssm_path is not None:
+            values["_local_ssm_path"] = _local_ssm_path
+
+        if _aws_ssm_path is not None:
+            values["_aws_ssm_path"] = _aws_ssm_path
+        super().__init__(_env_file, _env_file_encoding, _env_nested_delimiter, _secrets_dir, **values)
+
     ssm_parameter: Optional[SSMParameter] = None
 
     def __init_subclass__(cls, **kwargs):
@@ -62,10 +116,18 @@ class SSMConfig(BaseSettings):
             env_settings: SettingsSourceCallable,
             file_secret_settings: SettingsSourceCallable,
         ):
+            # this is an ugly way to store these special variables without overriding
+            # the whole BaseSettings._build_values function
+            local_source = LocalSSMSettings(
+                local_ssm_path=init_settings.init_kwargs.pop("_local_ssm_path", None)  # type: ignore[attr-defined]
+            )
+            aws_source = AwsSSMSettings(
+                ssm_path=init_settings.init_kwargs.pop("_aws_ssm_path", None)  # type: ignore[attr-defined]
+            )
             return (
                 init_settings,
-                local_ssm_settings_source,
-                aws_ssm_settings_source,
+                local_source,
+                aws_source,
                 env_settings,
                 file_secret_settings,
             )

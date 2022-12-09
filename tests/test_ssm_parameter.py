@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .conftest import PARAMETER_NAME, PARAMETER_VALUE, PARAMETER_VALUE_ESCAPED
+from tests.conftest import PARAMETER_NAME, PARAMETER_VALUE, PARAMETER_VALUE_ESCAPED
 
 if TYPE_CHECKING:
     from ssm_parameter_config import SSMParameter
