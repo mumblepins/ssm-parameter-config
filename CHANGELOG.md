@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v1.1.3 (2022-12-13)
+
+### Other
+
+  * [2022-12-13](065fa87952f5a2632a3979f93e8e03fb67aa3402) – Chore: revised click dependency.  <small>([Daniel Sullivan](mailto:daniel.j.sullivan@state.mn.us))</small>
+
+
 ## v1.1.2 (2022-12-09)
 
 ### Fix
